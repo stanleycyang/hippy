@@ -1,0 +1,23 @@
+{
+  "name": "hippy",
+  "version": "0.0.1",
+  "description": "A template generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stanleycyang/hippy.git"
+  },
+  "keywords": [
+    "template",
+    "generator"
+  ],
+  "author": "Stanley Yang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stanleycyang/hippy/issues"
+  },
+  "homepage": "https://github.com/stanleycyang/hippy#readme"
+}
