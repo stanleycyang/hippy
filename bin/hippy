@@ -1,0 +1,159 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+var mkdirp = require('mkdirp');
+var os = require('os');
+var fs = require('fs');
+var readline = require('readline');
+var path = require('path');
+var sortedObject = require('sorted-object');
+
+var _exit = process.exit;
+var eol = os.EOL;
+var pkg = require('../package.json');
+
+var version = pkg.version;
+
+process.exit = exit
+
+// CLI
+
+before(program, 'outputHelp', function() {
+  this.allowUnknownOption();
+});
+
+program
+  .version(version)
+  .usage('[options] [dir]')
+  .option('-r, --react', 'add react support')
+  .option('-g, --git', 'add .gitignore')
+  .option('f, --force', 'force on non-empty directory')
+  .parse(process.argv);
+
+if(!exit.exited) {
+  main();
+}
+
+/*
+ * Main executable
+ */
+
+function main() {
+  var destinationPath = program.args.shift() || '.';
+
+  // Name of the application
+  var appName = path.basename(path.resolve(destinationPath));
+
+  // Template engine
+  program.template = 'jade';
+  // Set up isomorphic React
+  if(program.react) program.template = 'react';
+
+  emptyDirectory(destinationPath, function(empty) {
+    // Either the 1) directory is available or 2) the user forces it
+    if(empty || program.force) {
+      
+    } else {
+      confirm('destination is not empty, continue? [y/N] ', function(ok) {
+        if(ok) {
+          process.stdin.destroy();
+          console.warn('Proceeding to overwrite');
+        } else {
+          console.error('aborting');
+          exit(1);
+        }
+      });
+    }
+  });
+}
+
+function before(obj, method, fn) {
+  var old = obj[method];
+
+  obj[method] = function() {
+    fn.call(this);
+    old.apply(this, arguments);
+  }
+}
+
+/*
+ * Check if the given directory `path` is empty.
+ * @param {String} path
+ * @param {Function} fn
+ */
+
+function emptyDirectory(path, fn) {
+  fs.readdir(path, function(err, files) {
+    // Error, no entry
+    if(err && 'ENOENT' != err.code) throw err;
+    fn(!files || !files.length);
+  });
+}
+
+
+/*
+ * Determine if launched from cmd.exe
+ */
+
+function launchedFromCmd() {
+  return process.platform === 'win32' && process.env._ === undefined;
+}
+
+/*
+ * Copy template
+ * @param {String} from
+ * @param {String} to
+ */
+
+function copy_template(from, to) {
+  from = path.join(__dirname, '..', 'templates', from);
+  write(to, fs.readFileSync(from, 'utf-8'));
+}
+
+/*
+ * Load template file
+ */
+
+function loadTemplate(name) {
+  return fs.readFileSync(path.join(__dirname, '..', 'templates', name), 'utf-8');
+}
+
+/*
+ * Gauge user for confirmation
+ * @param {String} msg
+ * @param {Function} callback
+ */
+
+function confirm(msg, callback) {
+  var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.question(msg, function(input) {
+    rl.close();
+    callback(/^y|yes|ok|true$/i.test(input));
+  });
+}
+
+/* Exit
+ * @param {Number} code
+ */
+
+function exit(code) {
+  function done() {
+    if(!(draining--)) _exit(code);
+  }
+
+  var draining = 0;
+  var streams = [process.stdout, process.stderr];
+
+  exit.exited = true;
+
+  streams.forEach(function(stream){
+    draining += 1;
+    stream.write('', done);
+  });
+
+  done();
+}
