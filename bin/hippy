@@ -115,6 +115,9 @@ function createApplication(app_name, path) {
     console.log('run the app');
   }
 
+  // JavaScript
+  const index = loadTemplate('js/routes/index.js');
+
   mkdir(path, () => {
     mkdir(path + '/public');
     mkdir(path + '/public/javascripts');
@@ -122,6 +125,10 @@ function createApplication(app_name, path) {
       complete();
     });
 
+    // Routes
+    mkdir(path + '/routes', () => {
+      write(path + '/routes/index.js', index);
+    });
   });
 
 }
@@ -135,7 +142,7 @@ function createApplication(app_name, path) {
 function mkdir(path, callback) {
   mkdirp(path, '0755', error => {
     if (error) throw error;
-    console.log('\x1b[36mcreate\x1b[0m : ' + path);
+    console.log('\x1b[36mcreate\x1b[0m: ' + path);
     callback && callback();
   });
 }
@@ -149,7 +156,7 @@ function mkdir(path, callback) {
 
 function write(path, str, mode) {
   fs.writeFileSync(path, str, {mode: mode || '0666' });
-  console.log('\x1b[36mcreate\x1b[0m : ' + path);
+  console.log('\x1b[36mcreate\x1b[0m: ' + path);
 }
 
 /*
