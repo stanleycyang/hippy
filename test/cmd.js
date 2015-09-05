@@ -1,5 +1,3 @@
-#! /usr/bin/env babel-node
-
 import assert from 'assert';
 import { spawn, exec } from 'child_process';
 import fs from 'fs';
