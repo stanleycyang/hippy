@@ -7,4 +7,4 @@ node_js:
   - "2.0"
   - "2.3"
 sudo: false
-script: "npm run-script test-ci"
+script: "npm test"
