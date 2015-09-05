@@ -101,6 +101,28 @@ function main() {
  */
 
 function createApplication(app_name, path) {
+  let wait = 5;
+
+  console.log();
+  // Run when complete
+  function complete() {
+    if (--wait) return;
+
+    console.log();
+    console.log('install dependencies:');
+    console.log('%s cd %s && npm install', prompt, path);;
+    console.log();
+    console.log('run the app');
+  }
+
+  mkdir(path, () => {
+    mkdir(path + '/public');
+    mkdir(path + '/public/javascripts');
+    mkdir(path + '/public/stylesheets', () => {
+      complete();
+    });
+
+  });
 
 }
 
