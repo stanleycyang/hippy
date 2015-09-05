@@ -1,65 +1,91 @@
-#!/usr/bin/env node
+#! /usr/bin/env babel-node
 
-var program = require('commander');
-var mkdirp = require('mkdirp');
-var os = require('os');
-var fs = require('fs');
-var readline = require('readline');
-var path = require('path');
-var sortedObject = require('sorted-object');
+import program from 'commander';
+import mkdirp from 'mkdirp'; // Recursively mkdir. `mkdir -p`
+import os from 'os'; // Operating System utility functions
+import fs from 'fs';
+import path from 'path';
+import readline from 'readline';
+import sortedObject from 'sorted-object';
 
-var _exit = process.exit;
-var eol = os.EOL;
-var pkg = require('../package.json');
+// Import package.json
+import pkg from '../package.json';
 
-var version = pkg.version;
+// Get package version
+const version = pkg.version;
+const eol = os.EOL; // End-of-Line
+const _exit = process.exit; // Ends the process with specified code. If omitted, exit uses 'success' code 0. Code 1 = failure
 
-process.exit = exit
+process.exit = exit;
 
 // CLI
 
-before(program, 'outputHelp', function() {
+before(program, 'outputHelp', () => {
   this.allowUnknownOption();
 });
 
 program
   .version(version)
   .usage('[options] [dir]')
-  .option('-r, --react', 'add react support')
+  .option('-s, --sass', 'add sass support')
+  .option('-R, --react', 'add reactjs support')
+  .option('-f, --force', 'force on non-empty directory')
   .option('-g, --git', 'add .gitignore')
-  .option('f, --force', 'force on non-empty directory')
   .parse(process.argv);
 
-if(!exit.exited) {
+/*
+ * Function to run before program commander
+ * @param {Object} object
+ * @param {Function} method
+ * @param {Function} callback
+ */
+
+function before(object, method, callback) {
+  let old = object[method];
+  object[method] = function() {
+    callback.call(this);
+    old.apply(this, arguments);
+  }
+}
+
+function confirm(message, callback) {
+  let rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.question(message, function(input) {
+    rl.close();
+    callback(/^y|yes|ok|true$/i.test(input));
+  });
+}
+
+if (!exit.exited) {
   main();
 }
 
-/*
- * Main executable
- */
+// Main program.
 
 function main() {
-  var destinationPath = program.args.shift() || '.';
+  // Path
+  const destinationPath = program.args.shift() || '.';
 
-  // Name of the application
-  var appName = path.basename(path.resolve(destinationPath));
+  // App name
+  const appName = path.basename(path.resolve(destinationPath));
 
-  // Template engine
   program.template = 'jade';
-  // Set up isomorphic React
-  if(program.react) program.template = 'react';
+  if (program.react) program.template = 'react';
 
   emptyDirectory(destinationPath, function(empty) {
-    // Either the 1) directory is available or 2) the user forces it
     if(empty || program.force) {
-      
+      createApplication(appName, destinationPath);
     } else {
-      confirm('destination is not empty, continue? [y/N] ', function(ok) {
-        if(ok) {
+      confirm('destination is not empty, continue? [y/N]', ok => {
+        if (ok) {
           process.stdin.destroy();
-          console.warn('Proceeding to overwrite');
+          createApplication(appName, destinationPath);
         } else {
-          console.error('aborting');
+          console.log('aborting');
           exit(1);
         }
       });
@@ -67,90 +93,100 @@ function main() {
   });
 }
 
-function before(obj, method, fn) {
-  var old = obj[method];
-
-  obj[method] = function() {
-    fn.call(this);
-    old.apply(this, arguments);
-  }
-}
-
 /*
- * Check if the given directory `path` is empty.
+ * Create application at the given name and path
+ *
+ * @param {String} app_name
  * @param {String} path
- * @param {Function} fn
  */
 
-function emptyDirectory(path, fn) {
-  fs.readdir(path, function(err, files) {
-    // Error, no entry
-    if(err && 'ENOENT' != err.code) throw err;
-    fn(!files || !files.length);
+function createApplication(app_name, path) {
+
+}
+
+/* Make directories
+ *
+ * @param {String} path
+ * @param {Function} fn
+ *
+ */
+function mkdir(path, callback) {
+  mkdirp(path, '0755', error => {
+    if (error) throw error;
+    console.log('\x1b[36mcreate\x1b[0m : ' + path);
+    callback && callback();
   });
 }
 
-
 /*
- * Determine if launched from cmd.exe
+ * echo str > path.
+ *
+ * @param {String} path
+ * @param {String} str
  */
 
-function launchedFromCmd() {
-  return process.platform === 'win32' && process.env._ === undefined;
+function write(path, str, mode) {
+  fs.writeFileSync(path, str, {mode: mode || '0666' });
+  console.log('\x1b[36mcreate\x1b[0m : ' + path);
 }
 
 /*
- * Copy template
+ * Copy template into new location
+ *
  * @param {String} from
  * @param {String} to
+ *
  */
 
 function copy_template(from, to) {
+  // grab the file
   from = path.join(__dirname, '..', 'templates', from);
+  // write to new location
   write(to, fs.readFileSync(from, 'utf-8'));
 }
 
 /*
- * Load template file
+ * Load template file.
+ *
+ * @param {String} name
+ *
  */
 
 function loadTemplate(name) {
+  // Goes into the template folder, UTF-8 encodes it
   return fs.readFileSync(path.join(__dirname, '..', 'templates', name), 'utf-8');
 }
 
 /*
- * Gauge user for confirmation
- * @param {String} msg
+ * Check if given directory `path` is empty
+ *
+ * @param {String} path
  * @param {Function} callback
  */
 
-function confirm(msg, callback) {
-  var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-
-  rl.question(msg, function(input) {
-    rl.close();
-    callback(/^y|yes|ok|true$/i.test(input));
+function emptyDirectory(path, callback) {
+  fs.readdir(path, (error, files) => {
+    if (error && 'ENOENT' !== error.code) throw err;
+    callback(!files || !files.length);
   });
 }
 
-/* Exit
+/* Graceful exit
+ *
  * @param {Number} code
+ *
  */
-
 function exit(code) {
   function done() {
-    if(!(draining--)) _exit(code);
+    if (!(draining--)) _exit(code); // Runs until code becomes 0
   }
 
-  var draining = 0;
-  var streams = [process.stdout, process.stderr];
+  let draining = 0;
+  let streams = [process.stdout, process.stderr];
 
   exit.exited = true;
 
-  streams.forEach(function(stream){
+  streams.forEach( stream => {
     draining += 1;
     stream.write('', done);
   });
