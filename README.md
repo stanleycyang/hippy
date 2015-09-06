@@ -4,6 +4,12 @@
 
 [![NPM Version][npm-image]][npm-url][![NPM Downloads][downloads-image]][downloads-url][![Linux Build][travis-image]][travis-url]
 
+## Purpose
+
+> Hippy's purpose is to create a framework which would allow programmers to make `React-Express-Mongo-NodeJS` (*REMN*) time quickly while providing a set of conventions and **Railsesque** generators that maximizes programmer efficiency and happiness. 
+
+> The current ecosystem will support `Flux`, Facebook's official framework for unidirectional data flow with React. 
+
 ## Installation
 
 ```sh
