@@ -1,6 +1,6 @@
 {
   "name": "hippy",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A ReactJS Generator",
   "main": "index.js",
   "scripts": {
