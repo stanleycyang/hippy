@@ -1,0 +1,9 @@
+import React, { Component, propTypes } from 'react'
+
+export default class file extends Component {
+  render() {
+    return (
+
+    )
+  }
+}

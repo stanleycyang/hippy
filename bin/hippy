@@ -42,7 +42,7 @@ function main() {
     checkFilePath(path, (err, stat) => {
 
       let component = loadTemplate('Component.js')
-      component.replace('{name}', path)
+      component = component.replace('{name}', path)
 
       if (err === null) {
         // File exists
