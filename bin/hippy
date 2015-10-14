@@ -1,29 +1,34 @@
 #! /usr/bin/env babel-node
 
-import program from 'commander'
-import mkdirp from 'mkdirp' // Recursively mkdir. `mkdir -p`
-import os from 'os' // Operating System utility functions
-import fs from 'fs'
-import path from 'path'
-import readline from 'readline'
-import sortedObject from 'sorted-object'
+const program = require('commander')
+const mkdirp = require('mkdirp')
+const fs = require('fs')
+const path = require('path')
+const readline = require('readline')
 
-// Import package.json
-import pkg from '../package.json'
+let exit = process.exit
 
-// Get package version
-const version = pkg.version
-const _exit = process.exit
+// Grab the version from package.json
+const version = require('../package.json').version
 
 process.exit = exit
 
+// Files
+let files
+
 program
   .version(version)
-  .option('-f, --force', 'force on non-empty files')
+  .option('-f, --force', 'force on a pre-existing file')
   .command('g <file> [otherFiles...]')
-  .parse(process.argv)
+  .action((file, otherFiles) => {
+    otherFiles.unshift(file)
+    files = otherFiles
+  })
+
+program.parse(process.argv)
 
 if (!exit.exited) {
+  // Execute the main program
   main()
 }
 
@@ -31,18 +36,37 @@ if (!exit.exited) {
  * Main program
  */
 
-function main () {
-  console.log('Hippy up!')
+function main() {
+  console.log('Starting Hippy...')
+  files.forEach((e, i) => {
+    console.log(e)
+  })
+}
+
+/*
+ * Prompt for confirmation to force
+ * @param {String} msg
+ * @param {Function} callback
+ */
+
+function confirm(msg, callback) {
+  let rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  })
+  rl.question(msg, (input) => {
+    rl.close()
+    callback(/^y|yes|ok|true$/i.test(input));
+  })
 }
 
 /*
  * @param {String} name
  */
 
-function loadFromTemplate(name) {
+function loadTemplate(name) {
   return fs.readFileSync(path.join(__dirname, '..', 'templates', name), 'utf-8')
 }
-
 
 /*
  * @param {String} path
@@ -54,14 +78,11 @@ function write(path, str, mode) {
   console.log('\x1b[36mcreate\x1b[0m : ' + path)
 }
 
-/*
- * Gracefully exit for async STDIO
+/**
+ * Graceful exit
  */
 
 function exit(code) {
-  // flush output for Node.js Windows pipe bug
-  // https://github.com/joyent/node/issues/6247 is just one bug example
-  // https://github.com/visionmedia/mocha/issues/333 has a good discussion
   function done() {
     if (!(draining--)) _exit(code);
   }
