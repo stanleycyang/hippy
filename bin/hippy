@@ -1,4 +1,5 @@
 #! /usr/bin/env babel-node
+'use strict'
 
 const program = require('commander')
 const mkdirp = require('mkdirp')

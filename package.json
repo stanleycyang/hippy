@@ -1,7 +1,7 @@
 {
   "name": "hippy",
   "version": "0.0.3",
-  "description": "A template generator",
+  "description": "A ReactJS Generator",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --compilers js:babel/register"
