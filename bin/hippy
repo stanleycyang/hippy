@@ -38,35 +38,10 @@ if (!exit.exited) {
 
 function main() {
   console.log('Starting Hippy...')
-  files.forEach((path) => {
-    checkFilePath(path, (err, stat) => {
 
-      let component = loadTemplate('Component.js')
-      component = component.replace('{name}', path)
-
-      if (err === null) {
-        // File exists
-        confirm(`File ${path} already exists. Overwrite? [y/N]`, (ok) => {
-          if (ok) {
-            // Overwrite the file
-            process.stdin.destroy()
-            write(path, component)
-          } else {
-            // Abort
-            console.error('aborted')
-            exit(1)
-          }
-        })
-      } else if(err.code === 'ENOENT') {
-        // Write files
-        write(path, component)
-      } else {
-        // Error has occurred
-        console.error('An error has occurred')
-        exit(1)
-      }
-    })
-  })
+  for ( var file of files) {
+    checkFilePath(file, createFile)
+  }
 }
 
 /*
@@ -75,7 +50,42 @@ function main() {
  */
 
 function checkFilePath(path, fn) {
-  fs.stat(path, fn)
+  try {
+    stats = fs.lstatSync(path)
+    if (stats === null) {
+      if (program.force) {
+        fn(path)
+      } else {
+        // Ask for permission
+        confirm(`The file ${path} already exists. Overwrite? [y/N]`, (ok) => {
+          if (ok) {
+            process.stdin.destroy()
+            fn(path)
+          } else {
+            console.error('abort')
+            exit(1)
+          }
+        })
+      }
+    }
+  } catch(e) {
+    switch (e.code) {
+      case 'ENOENT':
+        // Safe to write
+        fn(path)
+        break
+      default:
+        throw e
+    }
+  }
+}
+
+function createFile(name) {
+  let component = loadTemplate('Component.js')
+  component = component.replace('{name}', name)
+
+  // Write the component
+  write(name, component)
 }
 
 /*
@@ -110,7 +120,7 @@ function loadTemplate(name) {
 
 function write(path, str, mode) {
   fs.writeFileSync(path, str, { mode: mode || '0666' })
-  console.log('\x1b[36mcreate\x1b[0m : ' + path)
+  console.log('\x1b[36mcreated\x1b[0m: ' + path)
 }
 
 /**

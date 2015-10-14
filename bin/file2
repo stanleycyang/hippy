@@ -1,9 +1,0 @@
-import React, { Component, propTypes } from 'react'
-
-export default class file2 extends Component {
-  render() {
-    return (
-
-    )
-  }
-}
