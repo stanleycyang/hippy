@@ -39,8 +39,38 @@ if (!exit.exited) {
 function main() {
   console.log('Starting Hippy...')
   files.forEach((e, i) => {
-    console.log(e)
+    checkFilePath(e, (err, stat) => {
+      if (err === null) {
+        // File exists
+        confirm(`File ${e} already exists. Overwrite? [y/N]`, (ok) => {
+          if (ok) {
+            // Overwrite the file
+            process.stdin.destroy()
+            
+          } else {
+            // Abort
+            console.error('aborted')
+            exit(1)
+          }
+        })
+      } else if(err.code === 'ENOENT') {
+        // Write files
+      } else {
+        // Error has occurred
+        console.error('An error has occurred')
+        exit(1)
+      }
+    })
   })
+}
+
+/*
+ * @param {String} path
+ * @param {Function} fn
+ */
+
+function checkFilePath(path, fn) {
+  fs.stat(path, fn)
 }
 
 /*
