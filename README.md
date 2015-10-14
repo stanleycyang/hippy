@@ -22,7 +22,6 @@ $ npm install -g hippy
 ## Features
 
 - Component generator
-- Webpack setup
 - High test coverage
 - Quick and easy to learn CLI commands
 
