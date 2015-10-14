@@ -6,7 +6,7 @@
 
 ## Purpose
 
-> A simplistic and easy way to write ReactJS code.
+> A simplistic generator for ReactJS.
 
 The current ecosystem will support `Flux`, Facebook's official framework for unidirectional data flow with React. 
 
