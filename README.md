@@ -27,6 +27,17 @@ $ npm install -g hippy
 
 ## Usage
 
+To generate ReactJS Components:
+
+```bash
+$ hippy g SampleComponent
+```
+
+To generate multiple ReactJS Components:
+
+```bash
+$ hippy g one two three
+```
 
 ## License
 [MIT](LICENSE)
