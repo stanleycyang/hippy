@@ -38,15 +38,19 @@ if (!exit.exited) {
 
 function main() {
   console.log('Starting Hippy...')
-  files.forEach((e, i) => {
-    checkFilePath(e, (err, stat) => {
+  files.forEach((path) => {
+    checkFilePath(path, (err, stat) => {
+
+      let component = loadTemplate('Component.js')
+      component.replace('{name}', path)
+
       if (err === null) {
         // File exists
-        confirm(`File ${e} already exists. Overwrite? [y/N]`, (ok) => {
+        confirm(`File ${path} already exists. Overwrite? [y/N]`, (ok) => {
           if (ok) {
             // Overwrite the file
             process.stdin.destroy()
-            
+            write(path, component)
           } else {
             // Abort
             console.error('aborted')
@@ -55,6 +59,7 @@ function main() {
         })
       } else if(err.code === 'ENOENT') {
         // Write files
+        write(path, component)
       } else {
         // Error has occurred
         console.error('An error has occurred')
