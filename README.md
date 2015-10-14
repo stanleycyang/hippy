@@ -1,14 +1,9 @@
 #Hippy
 
-[Hippy's](https://www.npmjs.com/package/hippy) application generator.
+[Hippy](https://www.npmjs.com/package/hippy) is a beautifully simplistic generator for ReactJS.
+
 
 [![NPM Version][npm-image]][npm-url][![NPM Downloads][downloads-image]][downloads-url][![Linux Build][travis-image]][travis-url]
-
-## Purpose
-
-> A beautiful generator for ReactJS.
-
-The current ecosystem will support `Flux`, Facebook's official framework for unidirectional data flow with React. 
 
 ## Installation
 
@@ -16,25 +11,23 @@ The current ecosystem will support `Flux`, Facebook's official framework for uni
 $ npm install -g hippy
 ```
 
-## Quick start
+## Philosophy
 
-Create the app:
+`ReactJS` should be easy to use in any type of frontend environment. 
 
-```bash
-$ hippy demo_app
-```
+## Goal
 
-Install dependencies:
+**Hippy**'s goal is to make using `ReactJS` as productive and enjoyable as possible.
 
-```bash
-$ npm install
-```
+## Features
 
-Start
+- Component generator
+- Webpack setup
+- High test coverage
+- Quick and easy to learn CLI commands
 
-```bash
-$ hippy start
-```
+## Usage
+
 
 ## License
 [MIT](LICENSE)

@@ -1,260 +1,78 @@
 #! /usr/bin/env babel-node
 
-import program from 'commander';
-import mkdirp from 'mkdirp'; // Recursively mkdir. `mkdir -p`
-import os from 'os'; // Operating System utility functions
-import fs from 'fs';
-import path from 'path';
-import readline from 'readline';
-import sortedObject from 'sorted-object';
+import program from 'commander'
+import mkdirp from 'mkdirp' // Recursively mkdir. `mkdir -p`
+import os from 'os' // Operating System utility functions
+import fs from 'fs'
+import path from 'path'
+import readline from 'readline'
+import sortedObject from 'sorted-object'
 
 // Import package.json
-import pkg from '../package.json';
+import pkg from '../package.json'
 
 // Get package version
-const version = pkg.version;
-const eol = os.EOL; // End-of-Line
-const _exit = process.exit; // Ends the process with specified code. If omitted, exit uses 'success' code 0. Code 1 = failure
+const version = pkg.version
+const _exit = process.exit
 
-process.exit = exit;
-
-// CLI
-
-before(program, 'outputHelp', () => {
-  this.allowUnknownOption();
-});
+process.exit = exit
 
 program
   .version(version)
-  .usage('[options] [dir]')
-  .option('-s, --sass', 'add sass support')
-  .option('-u, --user', 'add user setup')
-  .option('-R, --react', 'add reactjs support')
-  .option('-f, --force', 'force on non-empty directory')
-  .option('-g, --git', 'add .gitignore')
-  .parse(process.argv);
-
-/*
- * Function to run before program commander
- * @param {Object} object
- * @param {Function} method
- * @param {Function} callback
- */
-
-function before(object, method, callback) {
-  let old = object[method];
-  object[method] = function() {
-    callback.call(this);
-    old.apply(this, arguments);
-  }
-}
-
-function confirm(message, callback) {
-  let rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-
-  rl.question(message, function(input) {
-    rl.close();
-    callback(/^y|yes|ok|true$/i.test(input));
-  });
-}
+  .option('-f, --force', 'force on non-empty files')
+  .command('g <file> [otherFiles...]')
+  .parse(process.argv)
 
 if (!exit.exited) {
-  main();
-}
-
-// Main program.
-
-function main() {
-  // Path
-  const destinationPath = program.args.shift() || '.';
-
-  // App name
-  const appName = path.basename(path.resolve(destinationPath));
-
-  program.template = 'jade';
-  if (program.react) program.template = 'react';
-
-  emptyDirectory(destinationPath, function(empty) {
-    if(empty || program.force) {
-      createApplication(appName, destinationPath);
-    } else {
-      confirm('destination is not empty, continue? [y/N]', ok => {
-        if (ok) {
-          process.stdin.destroy();
-          createApplication(appName, destinationPath);
-        } else {
-          console.log('aborting');
-          exit(1);
-        }
-      });
-    }
-  });
+  main()
 }
 
 /*
- * Create application at the given name and path
- *
- * @param {String} app_name
- * @param {String} path
+ * Main program
  */
 
-function createApplication(app_name, path) {
-  let wait = 5;
-
-  console.log();
-  // Run when complete
-  function complete() {
-    if (--wait) return;
-
-    console.log();
-    console.log('install dependencies:');
-    console.log('%s cd %s && npm install', prompt, path);;
-    console.log();
-    console.log('run the app');
-  }
-
-  // JavaScript
-  const index = loadTemplate('js/routes/index.js');
-  const app = loadTemplate('js/app.js');
-
-  mkdir(path, () => {
-    mkdir(path + '/public');
-    mkdir(path + '/public/javascripts');
-    mkdir(path + '/public/stylesheets', () => {
-      complete();
-    });
-
-    // Routes
-    mkdir(path + '/routes', () => {
-      write(path + '/routes/index.js', index);
-    });
-
-    mkdir(path + '/views', () => {
-      switch (program.template) {
-        case 'jade':
-          break;
-        case 'react':
-          break;
-      }
-      complete();
-    });
-  });
-
-  const pkgjson = {
-    name: app_name,
-    version: '0.0.0',
-    private: true,
-    scripts: { start: 'node ./bin/www' },
-    dependencies: {
-      'express': '~4.13.1',
-      'body-parser': '~1.13.2',
-      'cookie-parser': '~1.3.5',
-      'debug': '~2.2.0',
-      'morgan': '~1.6.1',
-      'serve-favicon': '~2.3.0'
-    }
-  }
-
-  // Sort dependencies likes npm
-  pkgjson.dependencies = sortedObject(pkgjson.dependencies);
-
-  write(path + '/package.json', JSON.stringify(pkgjson, null, 2));
-  write(path + '/app.js', app);
-
-  if (program.git) {
-    write(path + '/.gitignore', fs.readFileSync(__dirname + '/../templates/gitignore', 'utf-8'));
-  }
-
-  complete();
-
-}
-
-/* Make directories
- *
- * @param {String} path
- * @param {Function} fn
- *
- */
-function mkdir(path, callback) {
-  mkdirp(path, '0755', error => {
-    if (error) throw error;
-    console.log('\x1b[36mcreate\x1b[0m: ' + path);
-    callback && callback();
-  });
+function main () {
+  console.log('Hippy up!')
 }
 
 /*
- * echo str > path.
- *
+ * @param {String} name
+ */
+
+function loadFromTemplate(name) {
+  return fs.readFileSync(path.join(__dirname, '..', 'templates', name), 'utf-8')
+}
+
+
+/*
  * @param {String} path
  * @param {String} str
  */
 
 function write(path, str, mode) {
-  fs.writeFileSync(path, str, {mode: mode || '0666' });
-  console.log('\x1b[36mcreate\x1b[0m: ' + path);
+  fs.writeFileSync(path, str, { mode: mode || '0666' })
+  console.log('\x1b[36mcreate\x1b[0m : ' + path)
 }
 
 /*
- * Copy template into new location
- *
- * @param {String} from
- * @param {String} to
- *
+ * Gracefully exit for async STDIO
  */
 
-function copy_template(from, to) {
-  // grab the file
-  from = path.join(__dirname, '..', 'templates', from);
-  // write to new location
-  write(to, fs.readFileSync(from, 'utf-8'));
-}
-
-/*
- * Load template file.
- *
- * @param {String} name
- *
- */
-
-function loadTemplate(name) {
-  // Goes into the template folder, UTF-8 encodes it
-  return fs.readFileSync(path.join(__dirname, '..', 'templates', name), 'utf-8');
-}
-
-/*
- * Check if given directory `path` is empty
- *
- * @param {String} path
- * @param {Function} callback
- */
-
-function emptyDirectory(path, callback) {
-  fs.readdir(path, (error, files) => {
-    if (error && 'ENOENT' !== error.code) throw err;
-    callback(!files || !files.length);
-  });
-}
-
-/* Graceful exit
- *
- * @param {Number} code
- *
- */
 function exit(code) {
+  // flush output for Node.js Windows pipe bug
+  // https://github.com/joyent/node/issues/6247 is just one bug example
+  // https://github.com/visionmedia/mocha/issues/333 has a good discussion
   function done() {
-    if (!(draining--)) _exit(code); // Runs until code becomes 0
+    if (!(draining--)) _exit(code);
   }
 
-  let draining = 0;
-  let streams = [process.stdout, process.stderr];
+  var draining = 0;
+  var streams = [process.stdout, process.stderr];
 
   exit.exited = true;
 
-  streams.forEach( stream => {
+  streams.forEach(function(stream){
+    // submit empty write request and wait for completion
     draining += 1;
     stream.write('', done);
   });
