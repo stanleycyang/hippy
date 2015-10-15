@@ -92,7 +92,7 @@ function checkFilePath(path, fn) {
 
 function createFile(name) {
   let component = loadTemplate('Component.js')
-  component = component.replace('{name}', name)
+  component = component.replace(/{name}/g, name)
 
   // Write the component
   write(name, component)
