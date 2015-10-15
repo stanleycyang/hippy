@@ -46,6 +46,7 @@ function main() {
   console.log('Starting Hippy...')
 
   for ( var file of files) {
+    file = file + '.js'
     checkFilePath(file, createFile)
   }
 }
@@ -62,8 +63,7 @@ function checkFilePath(path, fn) {
         // Overwrite
         fn(path)
     } else {
-        console.error('abort')
-        exit(1)
+        console.error('abort overwrite')
     }
   } catch(e) {
     switch (e.code) {

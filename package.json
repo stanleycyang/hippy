@@ -1,6 +1,6 @@
 {
   "name": "hippy",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "An elegantly simple ReactJS Generator",
   "main": "bin/hippy",
   "preferGlobal": true,
