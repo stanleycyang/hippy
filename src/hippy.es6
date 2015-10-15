@@ -46,7 +46,6 @@ function main() {
   console.log('Starting Hippy...')
 
   for ( var file of files) {
-    file = file + '.js'
     checkFilePath(file, createFile)
   }
 }
@@ -84,6 +83,9 @@ function checkFilePath(path, fn) {
 function createFile(name) {
   let component = loadTemplate('Component.js')
   component = component.replace(/{name}/g, name)
+
+  // Add the file extension
+  name = name + '.js'
 
   // Write the component
   write(name, component)
