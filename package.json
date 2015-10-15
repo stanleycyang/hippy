@@ -1,8 +1,9 @@
 {
   "name": "hippy",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A ReactJS Generator",
-  "main": "index.js",
+  "main": "bin/hippy",
+  "preferGlobal": true,
   "scripts": {
     "test": "./node_modules/.bin/mocha --compilers js:babel/register"
   },
