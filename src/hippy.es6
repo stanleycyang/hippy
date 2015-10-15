@@ -38,6 +38,11 @@ if (!exit.exited) {
  */
 
 function main() {
+  if (typeof files === 'undefined') {
+    console.error('no command given!')
+    process.exit(1)
+  }
+
   console.log('Starting Hippy...')
 
   for ( var file of files) {
