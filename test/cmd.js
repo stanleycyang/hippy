@@ -70,6 +70,16 @@ describe('hippy', () => {
       cleanup(dir, done)
     })
 
+    it('should force a file creation', () => {
+      let args = ['g', 'one', 'two', '--force']
+      run(dir, args, (err, stdout) => {
+        if (err) return done(err)
+        files = parseCreatedFiles(stdout, dir)
+        assert.equal(files.length, 2, 'should have 2 files')
+        done()
+      })
+    })
+
   })
 
   describe('g <file> <otherFiles...?', () => {
@@ -88,6 +98,27 @@ describe('hippy', () => {
       this.timeout(3000)
       cleanup(dir, done)
     })
+
+    it('can create one file', () => {
+      let args = ['g', 'first']
+      run(dir, args, (err, stdout) => {
+        if (err) return done(err)
+        files = parseCreatedFiles(stdout, dir)
+        assert.equal(files.length, 1, 'should have 1 file')
+        done()
+      })
+    })
+
+    it('can create multiple files', () => {
+      let args = ['g', 'first', 'second', 'third']
+      run(dir, args, (err, stdout) => {
+        if (err) return done(err)
+        files = parseCreatedFiles(stdout, dir)
+        assert.equal(files.length, 3, 'should have 3 file')
+        done()
+      })
+    })
+
   })
 })
 
