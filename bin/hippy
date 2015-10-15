@@ -50,7 +50,6 @@ function main() {
     for (var _iterator = files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var file = _step.value;
 
-      file = file + '.js';
       checkFilePath(file, createFile);
     }
   } catch (err) {
@@ -102,6 +101,9 @@ function checkFilePath(path, fn) {
 function createFile(name) {
   var component = loadTemplate('Component.js');
   component = component.replace(/{name}/g, name);
+
+  // Add the file extension
+  name = name + '.js';
 
   // Write the component
   write(name, component);
