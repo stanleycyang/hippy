@@ -42,7 +42,7 @@ $ hippy g one two three
 ## License
 [MIT](LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/hippy.svg
+[npm-image]: https://badge.fury.io/js/hippy.svg
 [npm-url]: https://www.npmjs.com/package/hippy
 [downloads-image]: https://img.shields.io/npm/dm/hippy.svg
 [downloads-url]: https://www.npmjs.com/package/hippy
