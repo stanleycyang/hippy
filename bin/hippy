@@ -6,7 +6,7 @@ var program = require('commander');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
 var path = require('path');
-var readline = require('readline');
+var readline = require('readline-sync');
 
 var exit = process.exit;
 
@@ -75,22 +75,13 @@ function main() {
 
 function checkFilePath(path, fn) {
   try {
-    stats = fs.lstatSync(path);
-    if (stats === null) {
-      if (program.force) {
-        fn(path);
-      } else {
-        // Ask for permission
-        confirm('The file ' + path + ' already exists. Overwrite? [y/N]', function (ok) {
-          if (ok) {
-            process.stdin.destroy();
-            fn(path);
-          } else {
-            console.error('abort');
-            exit(1);
-          }
-        });
-      }
+    var stats = fs.lstatSync(path);
+    if (stats !== null && (program.force || confirm('The file ' + path + ' already exists. Overwrite? [y/N]'))) {
+      // Overwrite
+      fn(path);
+    } else {
+      console.error('abort');
+      exit(1);
     }
   } catch (e) {
     switch (e.code) {
@@ -119,18 +110,13 @@ function createFile(name) {
 /*
  * Prompt for confirmation to force
  * @param {String} msg
- * @param {Function} callback
+ * @param {Function} fn
  */
 
-function confirm(msg, callback) {
-  var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  rl.question(msg, function (input) {
-    rl.close();
-    callback(/^y|yes|ok|true$/i.test(input));
-  });
+function confirm(msg, fn) {
+  var confirm = readline.question(msg);
+  return (/^y|yes|ok|true$/i.test(confirm)
+  );
 }
 
 /*

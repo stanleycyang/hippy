@@ -5,7 +5,7 @@ const program = require('commander')
 const mkdirp = require('mkdirp')
 const fs = require('fs')
 const path = require('path')
-const readline = require('readline')
+const readline = require('readline-sync')
 
 let exit = process.exit
 
@@ -57,22 +57,13 @@ function main() {
 
 function checkFilePath(path, fn) {
   try {
-    stats = fs.lstatSync(path)
-    if (stats === null) {
-      if (program.force) {
+    let stats = fs.lstatSync(path)
+    if (stats !== null && (program.force || confirm(`The file ${path} already exists. Overwrite? [y/N]`))) {
+        // Overwrite
         fn(path)
-      } else {
-        // Ask for permission
-        confirm(`The file ${path} already exists. Overwrite? [y/N]`, (ok) => {
-          if (ok) {
-            process.stdin.destroy()
-            fn(path)
-          } else {
-            console.error('abort')
-            exit(1)
-          }
-        })
-      }
+    } else {
+        console.error('abort')
+        exit(1)
     }
   } catch(e) {
     switch (e.code) {
@@ -101,18 +92,12 @@ function createFile(name) {
 /*
  * Prompt for confirmation to force
  * @param {String} msg
- * @param {Function} callback
+ * @param {Function} fn
  */
 
-function confirm(msg, callback) {
-  let rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  })
-  rl.question(msg, (input) => {
-    rl.close()
-    callback(/^y|yes|ok|true$/i.test(input));
-  })
+function confirm(msg, fn) {
+  let confirm = readline.question(msg)
+  return /^y|yes|ok|true$/i.test(confirm)
 }
 
 /*

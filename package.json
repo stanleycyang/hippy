@@ -1,6 +1,6 @@
 {
   "name": "hippy",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "An elegantly simple ReactJS Generator",
   "main": "bin/hippy",
   "preferGlobal": true,
@@ -38,6 +38,7 @@
   "dependencies": {
     "commander": "^2.8.1",
     "mkdirp": "^0.5.1",
+    "readline-sync": "^1.2.21",
     "sorted-object": "^1.0.0"
   },
   "devDependencies": {
