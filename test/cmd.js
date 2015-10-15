@@ -25,7 +25,8 @@ describe('hippy', () => {
   })
 
   describe('when no arguments are provided', () => {
-    let dir
+    let files, dir, output
+
     mocha.before((done) => {
       createTestEnvironment((err, newDir) => {
         if (err) return done(err)
@@ -34,13 +35,60 @@ describe('hippy', () => {
       })
     })
 
-    it('should create basic component(s)', () => {
-    
+    // Use old-school callback to prevent this.timeout error
+    mocha.after(function(done) {
+      this.timeout(3000)
+      cleanup(dir, done)
+    })
+
+    it('should not create basic component(s)', () => {
+      run(dir, [], (err, stdout) => {
+        if (err) return done(err)
+        output = stdout
+        files = parseCreatedFiles(stdout, dir)
+        assert.equal(files.length, 0)
+        assert.isDefined(output)
+        done()
+      })
     })
   })
 
+  describe('-f', () => {
+    let files, dir, output
 
+    mocha.before((done) => {
+      createTestEnvironment((err, newDir) => {
+        if (err) return done(err)
+        dir = newDir
+        done()
+      })
+    })
 
+    // Use old-school callback to prevent this.timeout error
+    mocha.after(function(done) {
+      this.timeout(3000)
+      cleanup(dir, done)
+    })
+
+  })
+
+  describe('g <file> <otherFiles...?', () => {
+    let files, dir, output
+
+    mocha.before((done) => {
+      createTestEnvironment((err, newDir) => {
+        if (err) return done(err)
+        dir = newDir
+        done()
+      })
+    })
+
+    // Use old-school callback to prevent this.timeout error
+    mocha.after(function(done) {
+      this.timeout(3000)
+      cleanup(dir, done)
+    })
+  })
 })
 
 /*
@@ -109,4 +157,25 @@ function run(dir, args, callback) {
     callback(err, stdout.replace(/\x1b\[(\d+)m/g, '_color_$1_'))
   }
 
+}
+
+function parseCreatedFiles(output, dir) {
+  let files = [],
+      lines = output.split(/[\r\n]+/),
+      match;
+
+  for (let i of lines) {
+    if ((match = /create: (.*)$/.exec(lines[i]))) {
+      let file = match[1]
+
+      if (dir) {
+        file = path.resolve(dir, file)
+        file = path.relative(dir, file)
+      }
+
+      file = file.replace(/\\/g, '/')
+      files.push(file)
+    }
+  }
+  return files
 }
