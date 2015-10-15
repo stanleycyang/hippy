@@ -1,4 +1,4 @@
-import React, { Component, propTypes } from 'react'
+import React, { Component, PropTypes } from 'react'
 
 export default class {name} extends Component {
   render() {
@@ -7,3 +7,6 @@ export default class {name} extends Component {
     )
   }
 }
+
+{name}.propTypes = {}
+{name}.defaultProps = {}
