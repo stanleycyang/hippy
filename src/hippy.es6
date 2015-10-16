@@ -47,6 +47,8 @@ function main() {
   console.log('\nStarting Hippy...\n'.random)
 
   for ( let file of files) {
+    // Add the file extension
+    file = file + '.js'
     checkFilePath(file, createFile)
   }
 }
@@ -83,10 +85,8 @@ function checkFilePath(path, fn) {
 
 function createFile(name) {
   let component = loadTemplate('Component.js')
-  component = component.replace(/{name}/g, name)
+  component = component.replace(/{name}/g, name.replace(/\.(js|jsx)$/, ''))
 
-  // Add the file extension
-  //name = name + '.js'
 
   // Write the component
   write(name, component)
