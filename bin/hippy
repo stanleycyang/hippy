@@ -7,6 +7,7 @@ var mkdirp = require('mkdirp');
 var fs = require('fs');
 var path = require('path');
 var readline = require('readline-sync');
+var colors = require('colors');
 
 var exit = process.exit;
 
@@ -36,11 +37,11 @@ if (!exit.exited) {
 
 function main() {
   if (typeof files === 'undefined') {
-    console.error('no command given!');
+    console.error('no command given!'.red);
     process.exit(1);
   }
 
-  console.log('Starting Hippy...');
+  console.log('\nStarting Hippy...\n'.random);
 
   var _iteratorNormalCompletion = true;
   var _didIteratorError = false;
@@ -50,6 +51,8 @@ function main() {
     for (var _iterator = files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var file = _step.value;
 
+      // Add the file extension
+      file = file + '.js';
       checkFilePath(file, createFile);
     }
   } catch (err) {
@@ -80,7 +83,7 @@ function checkFilePath(path, fn) {
       // Overwrite
       fn(path);
     } else {
-      console.error('abort overwrite');
+      console.error('abort overwrite'.red);
     }
   } catch (e) {
     switch (e.code) {
@@ -100,10 +103,7 @@ function checkFilePath(path, fn) {
 
 function createFile(name) {
   var component = loadTemplate('Component.js');
-  component = component.replace(/{name}/g, name);
-
-  // Add the file extension
-  name = name + '.js';
+  component = component.replace(/{name}/g, name.replace(/\.(js|jsx)$/, ''));
 
   // Write the component
   write(name, component);
@@ -136,7 +136,7 @@ function loadTemplate(name) {
 
 function write(path, str, mode) {
   fs.writeFileSync(path, str, { mode: mode || '0666' });
-  console.log('\x1b[36mcreated\x1b[0m: ' + path);
+  console.log('created: '.green + path);
 }
 
 /**
