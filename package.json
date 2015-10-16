@@ -39,6 +39,7 @@
   ],
   "homepage": "https://github.com/stanleycyang/hippy#readme",
   "dependencies": {
+    "colors": "^1.1.2",
     "commander": "^2.8.1",
     "mkdirp": "^0.5.1",
     "readline-sync": "^1.2.21",

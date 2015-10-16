@@ -6,6 +6,7 @@ const mkdirp = require('mkdirp')
 const fs = require('fs')
 const path = require('path')
 const readline = require('readline-sync')
+const colors = require('colors')
 
 let exit = process.exit
 
@@ -39,11 +40,11 @@ if (!exit.exited) {
 
 function main() {
   if (typeof files === 'undefined') {
-    console.error('no command given!')
+    console.error('no command given!'.red)
     process.exit(1)
   }
 
-  console.log('Starting Hippy...')
+  console.log('\nStarting Hippy...\n'.rainbow)
 
   for ( var file of files) {
     checkFilePath(file, createFile)
@@ -62,7 +63,7 @@ function checkFilePath(path, fn) {
         // Overwrite
         fn(path)
     } else {
-        console.error('abort overwrite')
+        console.error('abort overwrite'.red)
     }
   } catch(e) {
     switch (e.code) {
@@ -117,7 +118,7 @@ function loadTemplate(name) {
 
 function write(path, str, mode) {
   fs.writeFileSync(path, str, { mode: mode || '0666' })
-  console.log('\x1b[36mcreated\x1b[0m: ' + path)
+  console.log('created: '.green + path)
 }
 
 /**
