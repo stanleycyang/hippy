@@ -15,6 +15,8 @@
     "template",
     "generator",
     "ReactJS",
+    "webpack",
+    "props",
     "web",
     "components"
   ],
@@ -44,6 +46,9 @@
   "devDependencies": {
     "babel": "^5.8.23",
     "chai": "^3.2.0",
+    "coveralls": "^2.11.4",
+    "isparta": "^3.1.0",
+    "istanbul": "^0.3.22",
     "mocha": "^2.3.0",
     "rimraf": "^2.4.3",
     "supertest": "^1.1.0"
