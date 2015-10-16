@@ -44,9 +44,9 @@ function main() {
     process.exit(1)
   }
 
-  console.log('\nStarting Hippy...\n'.rainbow)
+  console.log('\nStarting Hippy...\n'.random)
 
-  for ( var file of files) {
+  for ( let file of files) {
     checkFilePath(file, createFile)
   }
 }
@@ -86,7 +86,7 @@ function createFile(name) {
   component = component.replace(/{name}/g, name)
 
   // Add the file extension
-  name = name + '.js'
+  //name = name + '.js'
 
   // Write the component
   write(name, component)
