@@ -3,7 +3,7 @@
 [Hippy](https://www.npmjs.com/package/hippy) is a beautifully simplistic generator for ReactJS.
 
 
-[![NPM Version][npm-image]][npm-url][![NPM Downloads][downloads-image]][downloads-url][![Linux Build][travis-image]][travis-url][![Coveralls][coverall-image]]
+[![NPM Version][npm-image]][npm-url][![NPM Downloads][downloads-image]][downloads-url][![Linux Build][travis-image]][travis-url]![Coveralls][coverall-image]
 
 ## Installation
 
