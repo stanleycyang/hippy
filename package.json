@@ -5,7 +5,8 @@
   "main": "bin/hippy",
   "preferGlobal": true,
   "scripts": {
-    "test": "./node_modules/.bin/mocha --compilers js:babel/register"
+    "test": "./node_modules/.bin/mocha --reporter spec --bail --check-leaks test/ --compilers js:babel/register",
+    "test-ci": "./node_modules/.bin/mocha --reporter spec --check-leaks test/ --compilers js:babel/register"
   },
   "repository": {
     "type": "git",
