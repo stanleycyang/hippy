@@ -48,7 +48,7 @@ function main() {
 
   for ( let file of files) {
     // Add the file extension
-    file = file + '.js'
+    file = file.replace(/\.(js|jsx)/g, '') + '.js'
     checkFilePath(file, createFile)
   }
 }
@@ -85,11 +85,22 @@ function checkFilePath(path, fn) {
 
 function createFile(name) {
   let component = loadTemplate('Component.js')
-  component = component.replace(/{name}/g, name.replace(/\.(js|jsx)$/, ''))
+  let componentName = name.replace(/\.(js|jsx)|(\S+\/)/g, '')
+  component = component.replace(/{name}/g, componentName)
 
 
   // Write the component
   write(name, component)
+}
+
+/*
+ * @param {String} path
+ * @param {String} str
+ */
+
+function write(path, str, mode) {
+  fs.writeFileSync(path, str, { mode: mode || '0666' })
+  console.log('created: '.green + path)
 }
 
 /*
@@ -111,15 +122,6 @@ function loadTemplate(name) {
   return fs.readFileSync(path.join(__dirname, '..', 'templates', name), 'utf-8')
 }
 
-/*
- * @param {String} path
- * @param {String} str
- */
-
-function write(path, str, mode) {
-  fs.writeFileSync(path, str, { mode: mode || '0666' })
-  console.log('created: '.green + path)
-}
 
 /**
  * Graceful exit
