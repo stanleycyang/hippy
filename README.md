@@ -39,6 +39,12 @@ To generate multiple ReactJS Components:
 $ hippy g one two three
 ```
 
+Generating within nested folders
+
+```bash
+$ hippy g path/to/folder/MySampleComponent
+```
+
 ## License
 [MIT](LICENSE)
 
