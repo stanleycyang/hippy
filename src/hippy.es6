@@ -1,4 +1,4 @@
-#! /usr/bin/env node
+#! /usr/bin/env babel-node
 'use strict'
 
 const program = require('commander')
@@ -45,11 +45,18 @@ function main() {
   }
 
   console.log('\nStarting Hippy...\n'.random)
+  generateComponents(files)
+}
 
-  for ( let file of files) {
+/*
+ * @param {Array} components
+ */
+
+function generateComponents(components) {
+  for ( let component of components) {
     // Add the file extension
-    file = file.replace(/\.(js|jsx)/g, '') + '.js'
-    checkFilePath(file, createFile)
+    component = component.replace(/\.(js|jsx)/g, '') + '.js'
+    checkFilePath(component, createFile)
   }
 }
 
