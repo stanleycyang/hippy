@@ -67,6 +67,7 @@ function main() {
 function generateApp(path) {
 
   // Load templates
+  const README = loadTemplate('app/README.md')
   const gitignore = loadTemplate('app/gitignore')
   const pkg = loadTemplate('app/package.json')
   const www = loadTemplate('app/bin/www')
@@ -80,6 +81,7 @@ function generateApp(path) {
     mkdir(path + '/static')
     mkdir(path + '/server')
     mkdir(path + '/client/components', () => {
+      write(path + '/README.md', README)
       write(path + '/.gitignore', gitignore)
       write(path + '/package.json', pkg)
       write(path + '/bin/www', www, '0755')
