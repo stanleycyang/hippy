@@ -1,3 +1,3 @@
 #README
 
-Write a detail description of your application here
+Write a detailed description of your application here

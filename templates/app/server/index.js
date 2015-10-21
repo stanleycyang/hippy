@@ -6,7 +6,7 @@ import home from './routes';
 
 const app = express()
 
-import { compiler, devConfig } from '../webpack/server'
+import { compiler, devConfig } from '../webpack'
 
 // For development webpack purposes..
 if (config.env === 'development') {
