@@ -16,15 +16,25 @@ const version = require('../package.json').version
 process.exit = exit
 
 // Files
-let files
+let files, app
 
 program
   .version(version)
-  .option('-f, --force', 'force on a pre-existing file')
+  .option('-f, --force', 'force on a pre-existing file or directory')
+
+program
   .command('g <file> [otherFiles...]')
   .action((file, otherFiles) => {
+    console.log(file)
     otherFiles.unshift(file)
     files = otherFiles
+  })
+
+program
+  .command('init <name>')
+  .description('initialize hippy application')
+  .action((name) => {
+    app = name
   })
 
 program.parse(process.argv)
@@ -39,13 +49,15 @@ if (!exit.exited) {
  */
 
 function main() {
-  if (typeof files === 'undefined') {
+  if (typeof files === 'undefined' && typeof app === 'undefined') {
     console.error('no command given!'.red)
     process.exit(1)
   }
 
   console.log('\nStarting Hippy...\n'.random)
-  generateComponents(files)
+
+  if (app) console.log(app)
+  if (files) generateComponents(files)
 }
 
 /*
