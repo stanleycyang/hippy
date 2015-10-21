@@ -67,18 +67,26 @@ function main() {
 function generateApp(path) {
 
   // Load templates
+  const gitignore = loadTemplate('app/gitignore')
+  const pkg = loadTemplate('app/package.json')
   const www = loadTemplate('app/bin/www')
   const client = loadTemplate('app/client/index.js')
   const server = loadTemplate('app/server/index.js')
+  const devConfig = loadTemplate('app/webpack/dev.config.js')
+  const prodConfig = loadTemplate('app/webpack/prod.config.js')
 
   mkdir(path + '/bin', () => {
     mkdir(path + '/webpack')
     mkdir(path + '/static')
     mkdir(path + '/server')
     mkdir(path + '/client/components', () => {
+      write(path + '/.gitignore', gitignore)
+      write(path + '/package.json', pkg)
       write(path + '/bin/www', www, '0755')
-      write(path + '/client/index', client)
-      write(path + '/server/index', server)
+      write(path + '/client/index.js', client)
+      write(path + '/server/index.js', server)
+      write(path + '/webpack/dev.config.js', devConfig)
+      write(path + '/webpack/prod.config.js', prodConfig)
     })
   })
 }
