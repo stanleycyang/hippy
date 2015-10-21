@@ -23,6 +23,13 @@ program
   .option('-f, --force', 'force on a pre-existing file or directory')
 
 program
+  .command('init <name>')
+  .description('initialize hippy application')
+  .action((name) => {
+    app = name
+  })
+
+program
   .command('g <file> [otherFiles...]')
   .action((file, otherFiles) => {
     console.log(file)
@@ -30,12 +37,6 @@ program
     files = otherFiles
   })
 
-program
-  .command('init <name>')
-  .description('initialize hippy application')
-  .action((name) => {
-    app = name
-  })
 
 program.parse(process.argv)
 
@@ -56,8 +57,12 @@ function main() {
 
   console.log('\nStarting Hippy...\n'.random)
 
-  if (app) console.log(app)
+  if (app) generateApp(app)
   if (files) generateComponents(files)
+}
+
+function generateApp(name) {
+  console.log(name)
 }
 
 /*
