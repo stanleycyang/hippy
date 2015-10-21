@@ -64,8 +64,13 @@ function main() {
  * @param {String} name
  */
 
-function generateApp(name) {
-  console.log(name)
+function generateApp(path) {
+  mkdir(path, () => {
+    mkdir(path + '/webpack')
+    mkdir(path + '/static')
+    mkdir(path + '/server')
+    mkdir(path + '/client')
+  })
 }
 
 /*
@@ -139,7 +144,7 @@ function write(path, str, mode) {
 function mkdir(path, fn) {
   mkdirp(path, '0755', (err) => {
     if (err) throw err
-    console.log('created directory: '.blue + path)
+    console.log('created directory: '.bold.yellow + path)
     fn && fn()
   })
 }
