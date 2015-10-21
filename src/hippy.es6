@@ -32,7 +32,6 @@ program
 program
   .command('g <file> [otherFiles...]')
   .action((file, otherFiles) => {
-    console.log(file)
     otherFiles.unshift(file)
     files = otherFiles
   })
@@ -60,6 +59,10 @@ function main() {
   if (app) generateApp(app)
   if (files) generateComponents(files)
 }
+
+/*
+ * @param {String} name
+ */
 
 function generateApp(name) {
   console.log(name)
