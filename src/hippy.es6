@@ -65,11 +65,18 @@ function main() {
  */
 
 function generateApp(path) {
+
+  // Load templates
+  const www = loadTemplate('app/bin/www')
+
   mkdir(path, () => {
+    mkdir(path + '/bin')
     mkdir(path + '/webpack')
     mkdir(path + '/static')
     mkdir(path + '/server')
-    mkdir(path + '/client')
+    mkdir(path + '/client/components', () => {
+      write(path + '/bin/www', www, '0755')
+    })
   })
 }
 
@@ -144,7 +151,7 @@ function write(path, str, mode) {
 function mkdir(path, fn) {
   mkdirp(path, '0755', (err) => {
     if (err) throw err
-    console.log('created directory: '.bold.yellow + path)
+    console.log('created: '.green + path)
     fn && fn()
   })
 }
