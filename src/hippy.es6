@@ -1,4 +1,4 @@
-#! /usr/bin/env babel-node
+#! /usr/bin/env node
 'use strict'
 
 const program = require('commander')
@@ -101,6 +101,20 @@ function createFile(name) {
 function write(path, str, mode) {
   fs.writeFileSync(path, str, { mode: mode || '0666' })
   console.log('created: '.green + path)
+}
+
+/*
+ * Mkdir -p
+ * @param {String} path
+ * @param {Function} fn
+ */
+
+function mkdir(path, fn) {
+  mkdirp(path, '0755', (err) => {
+    if (err) throw err
+    console.log('created directory: '.blue + path)
+    fn && fn()
+  })
 }
 
 /*
