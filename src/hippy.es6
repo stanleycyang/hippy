@@ -68,14 +68,17 @@ function generateApp(path) {
 
   // Load templates
   const www = loadTemplate('app/bin/www')
+  const client = loadTemplate('app/client/index.js')
+  const server = loadTemplate('app/server/index.js')
 
-  mkdir(path, () => {
-    mkdir(path + '/bin')
+  mkdir(path + '/bin', () => {
     mkdir(path + '/webpack')
     mkdir(path + '/static')
     mkdir(path + '/server')
     mkdir(path + '/client/components', () => {
       write(path + '/bin/www', www, '0755')
+      write(path + '/client/index', client)
+      write(path + '/server/index', server)
     })
   })
 }
