@@ -69,7 +69,7 @@ function generateApp(path) {
   // Load templates
   const README = loadTemplate('app/README.md')
   const gitignore = loadTemplate('app/gitignore')
-  const pkg = loadTemplate('app/package.json')
+  const pkg = loadTemplate('app/package.json').replace(/{name}/g, path)
   const www = loadTemplate('app/bin/www')
   const client = loadTemplate('app/client/index.js')
   const App = loadTemplate('app/client/components/App.js')
