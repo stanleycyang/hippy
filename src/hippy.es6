@@ -22,12 +22,20 @@ program
   .version(version)
   .option('-f, --force', 'force on a pre-existing file or directory')
 
+/*
+ * init command
+ */
+
 program
   .command('init <name>')
   .description('initialize hippy application')
   .action((name) => {
     app = name
   })
+
+/*
+ * g command
+ */
 
 program
   .command('g <file> [otherFiles...]')
