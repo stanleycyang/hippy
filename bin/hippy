@@ -17,9 +17,16 @@ var version = require('../package.json').version;
 process.exit = exit;
 
 // Files
-var files = undefined;
+var files = undefined,
+    app = undefined;
 
-program.version(version).option('-f, --force', 'force on a pre-existing file').command('g <file> [otherFiles...]').action(function (file, otherFiles) {
+program.version(version).option('-f, --force', 'force on a pre-existing file or directory');
+
+program.command('init <name>').description('initialize hippy application').action(function (name) {
+  app = name;
+});
+
+program.command('g <file> [otherFiles...]').action(function (file, otherFiles) {
   otherFiles.unshift(file);
   files = otherFiles;
 });
@@ -36,24 +43,84 @@ if (!exit.exited) {
  */
 
 function main() {
-  if (typeof files === 'undefined') {
+  if (typeof files === 'undefined' && typeof app === 'undefined') {
     console.error('no command given!'.red);
     process.exit(1);
   }
 
   console.log('\nStarting Hippy...\n'.random);
 
+  if (app) generateApp(app);
+  if (files) generateComponents(files);
+}
+
+/*
+ * @param {String} name
+ */
+
+function generateApp(path) {
+
+  // Load templates
+  var README = loadTemplate('app/README.md');
+  var gitignore = loadTemplate('app/gitignore');
+  var pkg = loadTemplate('app/package.json').replace(/{name}/g, path);
+  var www = loadTemplate('app/bin/www');
+  var client = loadTemplate('app/client/index.js');
+  var App = loadTemplate('app/client/components/App.js');
+  var server = loadTemplate('app/server/index.js');
+  var route = loadTemplate('app/server/routes/index.js');
+  var devConfig = loadTemplate('app/webpack/dev.config.js');
+  var prodConfig = loadTemplate('app/webpack/prod.config.js');
+  var webpack = loadTemplate('app/webpack/index.js');
+  var config = loadTemplate('app/config.js');
+  var index = loadTemplate('app/client/views/index.jade');
+  var error = loadTemplate('app/client/views/error.jade');
+  var layout = loadTemplate('app/client/views/layout.jade');
+
+  mkdir(path + '/bin', function () {
+    mkdir(path + '/webpack');
+    mkdir(path + '/static');
+    mkdir(path + '/server');
+    mkdir(path + '/server/routes/');
+    mkdir(path + '/client/views');
+    mkdir(path + '/client/components', function () {
+      write(path + '/README.md', README);
+      write(path + '/.gitignore', gitignore);
+      write(path + '/config.js', config);
+      write(path + '/package.json', pkg);
+      write(path + '/bin/www', www, '0755');
+      write(path + '/client/index.js', client);
+      write(path + '/client/components/App.js', App);
+      write(path + '/client/views/index.jade', index);
+      write(path + '/client/views/error.jade', error);
+      write(path + '/client/views/layout.jade', layout);
+      write(path + '/server/index.js', server);
+      write(path + '/server/routes/index.js', route);
+      write(path + '/webpack/index.js', webpack);
+      write(path + '/webpack/dev.config.js', devConfig);
+      write(path + '/webpack/prod.config.js', prodConfig);
+
+      console.log(('\n ' + path + ' created! Run \'npm install\' to install dependencies').cyan);
+    });
+  });
+}
+
+/*
+ * @param {Array} components
+ */
+
+function generateComponents(components) {
   var _iteratorNormalCompletion = true;
   var _didIteratorError = false;
   var _iteratorError = undefined;
 
   try {
-    for (var _iterator = files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var file = _step.value;
+    for (var _iterator = components[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var component = _step.value;
 
       // Add the file extension
-      file = file.replace(/\.(js|jsx)/g, '') + '.js';
-      checkFilePath(file, createFile);
+      component = component.replace(/\.(js|jsx)/g, '') + '.js';
+      checkFilePath(component, createFile);
     }
   } catch (err) {
     _didIteratorError = true;
@@ -118,6 +185,20 @@ function createFile(name) {
 function write(path, str, mode) {
   fs.writeFileSync(path, str, { mode: mode || '0666' });
   console.log('created: '.green + path);
+}
+
+/*
+ * Mkdir -p
+ * @param {String} path
+ * @param {Function} fn
+ */
+
+function mkdir(path, fn) {
+  mkdirp(path, '0755', function (err) {
+    if (err) throw err;
+    console.log('created: '.green + path);
+    fn && fn();
+  });
 }
 
 /*
