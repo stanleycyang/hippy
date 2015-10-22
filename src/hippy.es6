@@ -106,6 +106,8 @@ function generateApp(path) {
       write(path + '/webpack/index.js', webpack)
       write(path + '/webpack/dev.config.js', devConfig)
       write(path + '/webpack/prod.config.js', prodConfig)
+
+      console.log(`\n ${path} created! Run 'npm install' to install dependencies`.cyan)
     })
   })
 }
