@@ -78,6 +78,7 @@ function generateApp(path) {
   const devConfig = loadTemplate('app/webpack/dev.config.js')
   const prodConfig = loadTemplate('app/webpack/prod.config.js')
   const webpack = loadTemplate('app/webpack/index.js')
+  const config = loadTemplate('app/config.js')
 
   mkdir(path + '/bin', () => {
     mkdir(path + '/webpack')
@@ -87,6 +88,7 @@ function generateApp(path) {
     mkdir(path + '/client/components', () => {
       write(path + '/README.md', README)
       write(path + '/.gitignore', gitignore)
+      write(path + '/config.js', config)
       write(path + '/package.json', pkg)
       write(path + '/bin/www', www, '0755')
       write(path + '/client/index.js', client)
