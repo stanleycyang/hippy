@@ -24,6 +24,7 @@ $ npm install -g hippy
 - Component generator
 - High test coverage
 - Quick and easy to learn CLI commands
+- The latest and greatest ReactJS goodness
 
 ## Usage
 
