@@ -27,6 +27,12 @@ $ npm install -g hippy
 
 ## Usage
 
+Generate a boilerplate with `ReactJS` and `Express server`
+
+```bash
+$ hippy init MyAppName
+```
+
 To generate ReactJS Components:
 
 ```bash
