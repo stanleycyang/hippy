@@ -79,12 +79,17 @@ function generateApp(path) {
   const prodConfig = loadTemplate('app/webpack/prod.config.js')
   const webpack = loadTemplate('app/webpack/index.js')
   const config = loadTemplate('app/config.js')
+  const index = loadTemplate('app/client/views/index.jade')
+  const error = loadTemplate('app/client/views/error.jade')
+  const layout = loadTemplate('app/client/views/layout.jade')
+
 
   mkdir(path + '/bin', () => {
     mkdir(path + '/webpack')
     mkdir(path + '/static')
     mkdir(path + '/server')
     mkdir(path + '/server/routes/')
+    mkdir(path + '/client/views')
     mkdir(path + '/client/components', () => {
       write(path + '/README.md', README)
       write(path + '/.gitignore', gitignore)
@@ -93,6 +98,9 @@ function generateApp(path) {
       write(path + '/bin/www', www, '0755')
       write(path + '/client/index.js', client)
       write(path + '/client/components/App.js', App)
+      write(path + '/client/views/index.jade', index)
+      write(path + '/client/views/error.jade', error)
+      write(path + '/client/views/layout.jade', layout)
       write(path + '/server/index.js', server)
       write(path + '/server/routes/index.js', route)
       write(path + '/webpack/index.js', webpack)

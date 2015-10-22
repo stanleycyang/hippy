@@ -20,6 +20,10 @@ if (config.env === 'development') {
   app.use(require('webpack-hot-middleware')(compiler))
 }
 
+// view engine
+app.set('views', path.join(__dirname, '../client/views'))
+app.set('view engine', 'jade')
+
 // Set up routes
 app.use('/', home)
 
