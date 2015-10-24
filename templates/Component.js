@@ -9,4 +9,3 @@ export default class {name} extends Component {
 }
 
 {name}.propTypes = {}
-{name}.defaultProps = {}
