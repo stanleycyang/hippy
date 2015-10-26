@@ -2,9 +2,6 @@
 
 'use strict'
 
-// For ES6 in NodeJS
-const babel = require('babel/register')
-
 // Source in dependencies
 const http = require('http')
 const app = require('../server')
@@ -14,7 +11,7 @@ const pkg = require('../package.json')
 /*
  * Create port
  */
-const port = normalizePort(config.port || '3000')
+const port = normalizePort(config.port || '2015')
 app.set('port', port)
 
 /*
